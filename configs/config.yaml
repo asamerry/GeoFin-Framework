@@ -1,0 +1,13 @@
+data-in:
+  portfolio-value: 106.50 # for proportions, use 1
+  price-data: live # live for auto data (takes longer)
+  index-col: Date
+  data-col: Close
+model:
+  type: markowitz # markowitz/cvar/black-litterman
+  short: no # yes/no
+  confidence: none
+  penalty: l1 # none/l1/l2
+  penalty-weight: 0.1 # [0, 1]
+data-out:
+  plot: no # yes/no
