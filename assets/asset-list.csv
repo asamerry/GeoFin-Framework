@@ -1,31 +1,33 @@
-NAME,ABBREVIATION,INDUSTRY,DESCRIPTION
-Apple,AAPL,Technology,NA
-AMC Entertainment,AMC,Entertainment,NA
-Advanced Micro Devices,AMD,Technology,NA
-Amazon,AMZN,Retail,NA
-Broadcom,AVGO,Technology,NA
-Costco,COST,Retail,NA
-Disney,DIS,Entertainment,NA
-Ford,F,Transportation,NA
-Glass House Brands,GLASF,Cannabis,NA
-Google Class C,GOOG,NA,NA
-Google Class A,GOOGL,NA,NA
-iShares US Treasury Bond ETF,GOVT,Debt,NA
-Johnson & Johnson,JNJ,Medicine,NA
-J.P. Morgan,JPM,Finance,NA
-Coca-Cola,KO,NA,NA
-Eli Lilly,LLY,Pharmaceuticals,NA
-Mastercard,MA,NA,NA
-Meta,META,Technology,NA
-Microsoft,MSFT,Technology,NA
-Netflix,NFLX,Entertainment,NA
-Nvidia,NVDA,NA,NA
-Oracle,ORCL,NA,NA
-Procter & Gamble,PG,NA,NA
-Rivian,RIVN,NA,NA
-Tesla,TSLA,Transportation,NA
-Tigo Energy,TYGO,Energy,NA
-Visa,V,NA,NA
-Walmart,WMT,Retail,NA
-Woodward,WWD,Energy,NA
-Exxon Mobile,XOM,Oil,NA
+ABBREVIATION,NAME,TYPE,INDUSTRY,DESCRIPTION
+AAPL,Apple,Single Stock,Technology,NA
+AMC,AMC Entertainment,Single Stock,Entertainment,NA
+AMD,Advanced Micro Devices,Single Stock,Technology,NA
+AMZN,Amazon,Single Stock,Retail,NA
+AVGO,Broadcom,Single Stock,Technology,NA
+COST,Costco,Single Stock,Retail,NA
+DIS,Disney,Single Stock,Entertainment,NA
+F,Ford,Single Stock,Transportation,NA
+GLASF,Glass House Brands,Single Stock,Cannabis,NA
+GOOG,Google Class C,Single Stock,Technology,NA
+GOOGL,Google Class A,Single Stock,Technology,NA
+GOVT,iShares US Treasury Bond ETF,Bond ETF,Debt,NA
+JNJ,Johnson & Johnson,Single Stock,Medicine,NA
+JPM,J.P. Morgan,Single Stock,Finance,NA
+KO,Coca-Cola,Single Stock,Consumer Goods (Extra),NA
+LLY,Eli Lilly,Single Stock,Pharmaceuticals,NA
+MA,Mastercard,Single Stock,Finance,NA
+META,Meta,Single Stock,Technology,NA
+MSFT,Microsoft,Single Stock,Technology,NA
+MSOS,AdvisorShares Pure US Cannabis ETF,Stock ETF,Cannabis,NA
+NFLX,Netflix,Single Stock,Entertainment,NA
+NVDA,Nvidia,Single Stock,Technology,NA
+ORCL,Oracle,Single Stock,Technology,NA
+PG,Procter & Gamble,Single Stock,Consumer Goods (Necessary),NA
+RIVN,Rivian,Single Stock,Transportation,NA
+SPGI,S&P Global,Single Stock,Finance,NA
+TSLA,Tesla,Single Stock,Transportation,NA
+TYGO,Tigo Energy,Single Stock,Energy,NA
+V,Visa,Single Stock,Finance,NA
+WMT,Walmart,Single Stock,Retail,NA
+WWD,Woodward,Single Stock,Energy,NA
+XOM,Exxon Mobile,Single Stock,Oil,NA

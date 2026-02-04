@@ -7,7 +7,7 @@ model:
   type: markowitz # markowitz/cvar/black-litterman
   short: no # yes/no
   confidence: none
-  penalty: l1 # none/l1/l2
-  penalty-weight: 0.1 # [0, 1]
+  penalty: none # none/l1/l2
+  penalty-weight: 0 # [0, 1]
 data-out:
-  plot: no # yes/no
+  plot: yes # yes/no

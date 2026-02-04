@@ -26,10 +26,10 @@ with open(args.config, "r") as file:
 # Load price data
 if config["data-in"]["price-data"] == "live":
     print("Loading live data ...")
-    companies = list(pd.read_csv("companies/company-list.csv")["ABBREVIATION"])
-    num_stocks = len(companies)
-    data = [yf.Ticker(company).history(period="5y", interval="1mo")[config["data-in"]["data-col"]] for company in companies]
-    prices = pd.DataFrame(dict(zip(companies, data)))
+    assets = list(pd.read_csv("assets/asset-list.csv")["ABBREVIATION"])
+    num_stocks = len(assets)
+    data = [yf.Ticker(asset).history(period="5y", interval="1mo")[config["data-in"]["data-col"]] for asset in assets]
+    prices = pd.DataFrame(dict(zip(assets, data)))
 else:
     print(f"Loading data folder \"{config["data-in"]["price-data"]}\" ...")
     files = glob(f"{config["data-in"]["price-data"]}/*.csv")
