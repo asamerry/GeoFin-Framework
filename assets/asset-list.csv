@@ -1,33 +1,35 @@
-ABBREVIATION,NAME,TYPE,INDUSTRY,DESCRIPTION
-AAPL,Apple,Single Stock,Technology,NA
-AMC,AMC Entertainment,Single Stock,Entertainment,NA
-AMD,Advanced Micro Devices,Single Stock,Technology,NA
-AMZN,Amazon,Single Stock,Retail,NA
-AVGO,Broadcom,Single Stock,Technology,NA
-COST,Costco,Single Stock,Retail,NA
-DIS,Disney,Single Stock,Entertainment,NA
-F,Ford,Single Stock,Transportation,NA
-GLASF,Glass House Brands,Single Stock,Cannabis,NA
-GOOG,Google Class C,Single Stock,Technology,NA
-GOOGL,Google Class A,Single Stock,Technology,NA
-GOVT,iShares US Treasury Bond ETF,Bond ETF,Debt,NA
-JNJ,Johnson & Johnson,Single Stock,Medicine,NA
-JPM,J.P. Morgan,Single Stock,Finance,NA
-KO,Coca-Cola,Single Stock,Consumer Goods (Extra),NA
-LLY,Eli Lilly,Single Stock,Pharmaceuticals,NA
-MA,Mastercard,Single Stock,Finance,NA
-META,Meta,Single Stock,Technology,NA
-MSFT,Microsoft,Single Stock,Technology,NA
-MSOS,AdvisorShares Pure US Cannabis ETF,Stock ETF,Cannabis,NA
-NFLX,Netflix,Single Stock,Entertainment,NA
-NVDA,Nvidia,Single Stock,Technology,NA
-ORCL,Oracle,Single Stock,Technology,NA
-PG,Procter & Gamble,Single Stock,Consumer Goods (Necessary),NA
-RIVN,Rivian,Single Stock,Transportation,NA
-SPGI,S&P Global,Single Stock,Finance,NA
-TSLA,Tesla,Single Stock,Transportation,NA
-TYGO,Tigo Energy,Single Stock,Energy,NA
-V,Visa,Single Stock,Finance,NA
-WMT,Walmart,Single Stock,Retail,NA
-WWD,Woodward,Single Stock,Energy,NA
-XOM,Exxon Mobile,Single Stock,Oil,NA
+ABBREVIATION,NAME,TYPE,SECTOR,INDUSTRY,DESCRIPTION
+AAPL,Apple,Single Stock,Information Technology,Consumer Electronics,
+AMC,AMC Entertainment,Single Stock,Communication Services,Entertainment,
+AMD,Advanced Micro Devices,Single Stock,Information Technology,Semiconductors,
+AMZN,Amazon,Single Stock,Consumer Discretionary,Internet Retail,
+AVGO,Broadcom,Single Stock,Information Technology,Semiconductors,
+COST,Costco,Single Stock,Consumer Staples,Discount Stores,
+DIS,Disney,Single Stock,Communication Services,Entertainment,
+F,Ford,Single Stock,Consumer Discretionary,Auto Manufacturers,
+GLASF,Glass House Brands,Single Stock,Healthcare,Cannabis,"Owner of Glass House Farms, PLUS, Allswell, REEFORM, and Mama Sue"
+GOOG,Google Class C,Single Stock,Communication Services,Internet Content & Information,
+GOOGL,Google Class A,Single Stock,Communication Services,Internet Content & Information,
+GOVT,iShares US Treasury Bond ETF,Bond ETF,Government Bonds,National Debt,
+HOOD,Robinhood,Single Stock,Financials,Public Investment,
+JNJ,Johnson & Johnson,Single Stock,Healthcare,Drug Manufacturers - General,
+JPM,J.P. Morgan,Single Stock,Financials,Banks - Diversified,
+KO,Coca-Cola,Single Stock,Consumer Discretionary,Beverages - Non-Alcoholic,
+LLY,Eli Lilly,Single Stock,Healthcare,Drug Manufacturers - General,
+MA,Mastercard,Single Stock,Financials,Credit Services,
+META,Meta,Single Stock,Communication Services,Internet Content & Information,
+MSFT,Microsoft,Single Stock,Information Technology,Software - Infrastructure,
+MSOS,AdvisorShares Pure US Cannabis ETF,Equity ETF,"Real Estate, Industrials, Consumer Discretionary, Healthcare",Cannabis,"Tracks manufacturing power of the cannabis industry: real estate, production, etc."
+NFLX,Netflix,Single Stock,Communication Services,Entertainment,
+NVDA,Nvidia,Single Stock,Information Technology,Semiconductors,
+ORCL,Oracle,Single Stock,Information Technology,Software - Infrastructure,
+PG,Procter & Gamble,Single Stock,Consumer Staples,Household & Personal Products,
+RIVN,Rivian,Single Stock,Consumer Discretionary,Auto Manufacturers,
+SPGI,S&P Global,Single Stock,Financials,Financial Data & Stock Exchanges,
+TSLA,Tesla,Single Stock,Consumer Discretionary,Auto Manufacturers,
+TYGO,Tigo Energy,Single Stock,Energy,Solar,
+V,Visa,Single Stock,Financials,Credit Services,
+WMT,Walmart,Single Stock,Consumer Staples,Discount Stores,
+WWD,Woodward,Single Stock,Industrials,Aerospace & Defense,
+XOM,Exxon Mobile,Single Stock,Energy,Oil & Gas Integrated,
+YOLO,AdvisorShares Pure Cannabis ETF,Equity ETF,"Healthcare, Consumer Staples, Real Estate",Cannabis,"Tracks the sale of cannabis products in the US."
