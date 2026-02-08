@@ -1,4 +1,3 @@
-
 import numpy as np
 from numpy.linalg import inv
 import pandas as pd
@@ -47,22 +46,21 @@ def parse_view(toks, prices):
             else: picks.append(0)
         return float(toks[1]), picks
 
-def get_views(prices):
+def get_views(views_file, prices):
     Q = []; P = []
-    while True:
-        view = input("Enter a view or type \"done\". ").strip()
-        if view.lower() == "done": break
 
+    with open(views_file, "r") as file:
+        views = file.read().strip().split("\n")
+
+    for view in views:
         toks = view.split(" ")
         if not is_valid_view(toks, prices): 
-            print("Invalid view statement. Use either")
-            print("\"XYZ x.xx [up/down]\" or \"XYZ x.xx [over/under] ABC\".")
+            print(f"Invalid view statement: {view}.")
         else:
             weight, picks = parse_view(toks, prices)
             Q.append(weight)
             P.append(picks)
     
-    print("")
     return np.array(Q).reshape(-1, 1), np.array(P)
 
 def get_market_weights(prices):
@@ -85,10 +83,11 @@ def get_market_weights(prices):
     return np.array(w).reshape(-1, 1)
 
 class BlackLittermanModel(MarkowitzModel):
-    def __init__(self, prices, short, penalty, penalty_weight):
-        super().__init__(prices, short, penalty, penalty_weight)
+    def __init__(self, prices, short, penalty, penalty_weight, views_file):
+        super().__init__(prices, short, penalty, penalty_weight, "none")
+        self.title = "Black-Litterman"
         tau = 0.05
-        Q, P = get_views(prices)
+        Q, P = get_views(views_file, prices)
         Omega = np.diag(np.diag(tau * P @ self.Sigma @ P.T))
         
         w_mkt = get_market_weights(prices)
@@ -98,8 +97,3 @@ class BlackLittermanModel(MarkowitzModel):
         Pi = delta * self.Sigma @ w_mkt
 
         self.mu = np.reshape(inv(inv(tau * self.Sigma) + P.T @ inv(Omega) @ P) @ (inv(tau * self.Sigma) @ Pi + P.T @ inv(Omega) @ Q), (self.num_stocks, 1))
-
-    def print(self, portfolio_value):
-        print(" -=-=-=- Black-Litterman Model -=-=-=- ")
-        print(f"Maximum Sharpe Ratio: {self.max_sr:.4f}; Expected Return: {self.return_opt:.4f}; Expected Risk: {self.risk_opt:.4f}")
-        print(f"Optimized Portfolio: \n {dict(zip(self.returns.columns, (self.omega_opt * portfolio_value).round(2).tolist()))}")

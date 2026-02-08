@@ -44,7 +44,8 @@ model = models[config["model"]["type"]](
     prices = prices, 
     short = config["model"]["short"], 
     penalty = PENALTIES[config["model"]["penalty"]],
-    penalty_weight = config["model"]["penalty-weight"]
+    penalty_weight = config["model"]["penalty-weight"],
+    views_file = config["data-in"]["views-file"]
 )
 model.solve()
 model.print(config["data-in"]["portfolio-value"])

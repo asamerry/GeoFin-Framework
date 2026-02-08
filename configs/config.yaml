@@ -3,11 +3,11 @@ data-in:
   price-data: live # live for auto data (takes longer)
   index-col: Date
   data-col: Close
+  views-file: views/views.txt
 model:
-  type: markowitz # markowitz/cvar/black-litterman
+  type: black-litterman # markowitz/black-litterman
   short: no # yes/no
-  confidence: none
   penalty: none # none/l1/l2
   penalty-weight: 0 # [0, 1]
 data-out:
-  plot: yes # yes/no
+  plot: no # yes/no

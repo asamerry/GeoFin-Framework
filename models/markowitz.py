@@ -5,8 +5,9 @@ import warnings
 import cvxpy as cp
 
 class MarkowitzModel:
-    def __init__(self, prices, short, penalty, penalty_weight):
+    def __init__(self, prices, short, penalty, penalty_weight, views_file):
         self.short = short
+        self.title = "Markowitz"
         self.returns = prices.pct_change().dropna()
         self.num_stocks = len(prices.columns)
         self.mu = np.reshape(self.returns[-12:].mean(), (self.num_stocks, 1)) # use a shorter time window for mean returns
@@ -15,6 +16,11 @@ class MarkowitzModel:
         self.omega_vec = []; self.objective_values = []
 
         self.r_range = np.linspace(self.mu.min()+1e-3, self.mu.max()-1e-3, 500).tolist()
+
+        if views_file != "none":
+            print(f"Unused parameter: {views_file=}")
+        if penalty == "none" and penalty_weight not in [0, "none"]:
+            print(f"Unused parameter: {penalty_weight=}")
 
         self.omega = cp.Variable(self.num_stocks)
         self.f = cp.quad_form(self.omega, self.Sigma) + penalty_weight * penalty(self.omega)
@@ -48,7 +54,7 @@ class MarkowitzModel:
         self.risk_opt = self.objective_values[idx]
 
     def print(self, portfolio_value):
-        print(" -=-=-=- Mean-Variance Model -=-=-=- ")
+        print(f" -=-=-=- {self.title} Model -=-=-=- ")
         print(f"Maximum Sharpe Ratio: {self.max_sr:.4f}; Expected Return: {self.return_opt:.4f}; Expected Risk: {self.risk_opt:.4f}")
         print(f"Optimized Portfolio: \n {dict(zip(self.returns.columns, (self.omega_opt * portfolio_value).round(2).tolist()))}")
 
@@ -60,5 +66,5 @@ class MarkowitzModel:
         plt.xlabel("Expected Risk")
         risk_values = np.linspace(0, self.risk_opt, 100)
         plt.plot(risk_values, risk_values * self.max_sr, color="black")
-        plt.title("Mean-Variance Efficient Frontier")
+        plt.title(f"{self.title} Efficient Frontier")
         plt.show()
