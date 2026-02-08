@@ -23,19 +23,11 @@ with open(args.config, "r") as file:
     config = yaml.safe_load(file)
 
 # Load price data
-if config["data-in"]["price-data"] == "live":
-    print("Loading live data ...")
-    assets = list(pd.read_csv("assets/asset-list.csv")["ABBREVIATION"])
-    num_stocks = len(assets)
-    data = [yf.Ticker(asset).history(period="5y", interval="1mo")[config["data-in"]["data-col"]] for asset in assets]
-    prices = pd.DataFrame(dict(zip(assets, data)))
-else:
-    print(f"Loading data folder \"{config["data-in"]["price-data"]}\" ...")
-    files = glob(f"{config["data-in"]["price-data"]}/*.csv")
-    num_stocks = len(files)
-    prices = pd.DataFrame(
-        { os.path.basename(file).split(".")[0] : pd.read_csv(file, index_col=config["data-in"]["index-col"], date_format="%m/%Y")[config["data-in"]["data-col"]] for file in files }
-    )
+print("Loading prices data ...")
+assets = list(pd.read_csv("assets/asset-list.csv")["ABBREVIATION"])
+num_stocks = len(assets)
+data = [yf.Ticker(asset).history(period=config["data-in"]["period"], interval=config["data-in"]["interval"])[config["data-in"]["data-col"]] for asset in assets]
+prices = pd.DataFrame(dict(zip(assets, data)))
 print(f"Data collected through {prices.index[-1].date()}\n")
 
 # Call prescribed model
