@@ -5,7 +5,6 @@ from glob import glob
 import yfinance as yf
 
 from models.markowitz import markowitz
-from models.cvar import cvar
 from models.black_litterman import black_litterman
 
 PENALTIES = {
@@ -40,7 +39,7 @@ else:
 print(f"Data collected through {prices.index[-1].date()}\n")
 
 # Call prescribed model
-models = {"markowitz": markowitz, "cvar": cvar, "black-litterman": black_litterman}
+models = {"markowitz": markowitz, "black-litterman": black_litterman}
 models[config["model"]["type"]](
     prices = prices, 
     portfolio_value = config["data-in"]["portfolio-value"], 
