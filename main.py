@@ -4,8 +4,8 @@ import os, argparse, yaml
 from glob import glob
 import yfinance as yf
 
-from models.markowitz import markowitz
-from models.black_litterman import black_litterman
+from models.markowitz import MarkowitzModel
+from models.black_litterman import BlackLittermanModel
 
 PENALTIES = {
     "none": lambda x: 0, 
@@ -39,13 +39,13 @@ else:
 print(f"Data collected through {prices.index[-1].date()}\n")
 
 # Call prescribed model
-models = {"markowitz": markowitz, "black-litterman": black_litterman}
-models[config["model"]["type"]](
+models = {"markowitz": MarkowitzModel, "black-litterman": BlackLittermanModel}
+model = models[config["model"]["type"]](
     prices = prices, 
-    portfolio_value = config["data-in"]["portfolio-value"], 
     short = config["model"]["short"], 
-    confidence = config["model"]["confidence"],
     penalty = PENALTIES[config["model"]["penalty"]],
-    penalty_weight = config["model"]["penalty-weight"],
-    plot = config["data-out"]["plot"],
+    penalty_weight = config["model"]["penalty-weight"]
 )
+model.solve()
+model.print(config["data-in"]["portfolio-value"])
+if config["data-out"]["plot"]: model.plot()

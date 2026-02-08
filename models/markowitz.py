@@ -5,38 +5,35 @@ import warnings
 import cvxpy as cp
 
 class MarkowitzModel:
-    def __init__(self, prices, short, confidence, penalty, penalty_weight):
+    def __init__(self, prices, short, penalty, penalty_weight):
+        self.short = short
         self.returns = prices.pct_change().dropna()
-        num_stocks = len(prices.columns)
-        mu = np.reshape(self.returns[-12:].mean(), (num_stocks, 1)) # use a shorter time window for mean returns
-        Sigma = self.returns.cov()      
+        self.num_stocks = len(prices.columns)
+        self.mu = np.reshape(self.returns[-12:].mean(), (self.num_stocks, 1)) # use a shorter time window for mean returns
+        self.Sigma = self.returns.cov()      
 
-        omega_vec = []; self.objective_values = []
+        self.omega_vec = []; self.objective_values = []
 
-        if confidence != "none":
-            print(f"Unused parameter: {confidence=}")
-        if penalty == "none" and penalty_weight not in [0, "none"]:
-            print(f"Unused parameter: {penalty_weight=}")
+        self.r_range = np.linspace(self.mu.min()+1e-3, self.mu.max()-1e-3, 500).tolist()
 
-        self.r_range = np.linspace(mu.min()+1e-3, mu.max()-1e-3, 500).tolist()
+        self.omega = cp.Variable(self.num_stocks)
+        self.f = cp.quad_form(self.omega, self.Sigma) + penalty_weight * penalty(self.omega)
 
-        omega = cp.Variable(num_stocks)
-        f = cp.quad_form(omega, Sigma) + penalty_weight * penalty(omega)
-
+    def solve(self):
         def g(r, omega, mu):
             constraints = [mu.T @ omega == r, sum(omega) == 1]
-            if not short: constraints.append(omega >= 0)
+            if not self.short: constraints.append(omega >= 0)
             return constraints
 
         invalid_r = []
         for r in self.r_range:
-            prob = cp.Problem(cp.Minimize(f), g(r, omega, mu))
+            prob = cp.Problem(cp.Minimize(self.f), g(r, self.omega, self.mu))
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore", UserWarning)
                 prob.solve()
             if prob.status == "optimal":
-                omega_vec.append(omega.value)
-                self.objective_values.append(omega.value @ (Sigma @ omega.value))
+                self.omega_vec.append(self.omega.value)
+                self.objective_values.append(self.omega.value @ (self.Sigma @ self.omega.value))
             else:
                 #print(f"Problem {prob.status} for {r=}")
                 invalid_r.append(r)
@@ -46,7 +43,7 @@ class MarkowitzModel:
         sr = np.array(self.r_range) / self.objective_values
         idx = sr.argmax()
         self.max_sr = sr[idx]
-        self.omega_opt = omega_vec[idx]
+        self.omega_opt = self.omega_vec[idx]
         self.return_opt = self.r_range[idx]
         self.risk_opt = self.objective_values[idx]
 
@@ -65,8 +62,3 @@ class MarkowitzModel:
         plt.plot(risk_values, risk_values * self.max_sr, color="black")
         plt.title("Mean-Variance Efficient Frontier")
         plt.show()
-
-def markowitz(prices, portfolio_value, short, confidence, penalty, penalty_weight, plot):
-    model = MarkowitzModel(prices, short, confidence, penalty, penalty_weight)
-    model.print(portfolio_value)
-    if plot: model.plot()
