@@ -1,8 +1,9 @@
 data-in:
-  portfolio-value: 106.50 # for proportions, use 1
-  price-data: live # live for auto data (takes longer)
+  portfolio-value: 1 # for proportions, use 1
   index-col: Date
-  data-col: Close
+  data-col: Close # Open/High/Low/Close/Adj Close/Volume
+  period: 1y # 1d/5d/1mo/3mo/6mo/1y/2y/5y/10y/ytd/max
+  interval: 1d # 1m/2m/5m/15m/30m/60m/90m/1h/1d/5d/1wk/1mo
   views-file: views/views.txt
 model:
   type: black-litterman # markowitz/black-litterman
