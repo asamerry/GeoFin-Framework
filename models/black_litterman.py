@@ -79,8 +79,8 @@ def get_market_weights(prices):
     return np.array(w).reshape(-1, 1)
 
 class BlackLittermanModel(MarkowitzModel):
-    def __init__(self, prices, short, penalty, penalty_weight, views_file):
-        super().__init__(prices, short, penalty, penalty_weight, "none")
+    def __init__(self, prices, portfolio_value, short, penalty, penalty_weight, views_file):
+        super().__init__(prices, portfolio_value, short, penalty, penalty_weight, "none")
         self.title = "Black-Litterman"
         tau = 0.05 # [0, 1]
         Q, P = get_views(views_file, prices)

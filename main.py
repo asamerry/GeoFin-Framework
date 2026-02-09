@@ -1,6 +1,6 @@
 import pandas as pd
 import cvxpy as cp
-import argparse, yaml
+import os, argparse, yaml
 import yfinance as yf
 
 from models.markowitz import MarkowitzModel
@@ -33,11 +33,18 @@ print(f"Data collected through {prices.index[-1].date()}\n")
 models = {"markowitz": MarkowitzModel, "black-litterman": BlackLittermanModel}
 model = models[config["model"]["type"]](
     prices = prices, 
+    portfolio_value = config["data-in"]["portfolio-value"], 
     short = config["model"]["short"], 
     penalty = PENALTIES[config["model"]["penalty"]],
     penalty_weight = config["model"]["penalty-weight"],
     views_file = config["data-in"]["views-file"]
 )
 model.solve()
-model.print(config["data-in"]["portfolio-value"])
-if config["data-out"]["plot"]: model.plot()
+model.print()
+if config["data-out"]["plot"]: model.plot(config["data-out"]["export"], config["data-out"]["export-file"])
+
+# Export data
+if config["data-out"]["export"]:
+    os.makedirs(config["data-out"]["export-file"].split("/")[0], exist_ok=True)
+    with open(config["data-out"]["export-file"], "w") as file:
+        file.write(model.portfolio.replace(", ", "\n"))

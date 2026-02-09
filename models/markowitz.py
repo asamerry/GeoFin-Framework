@@ -5,7 +5,8 @@ import warnings
 import cvxpy as cp
 
 class MarkowitzModel:
-    def __init__(self, prices, short, penalty, penalty_weight, views_file):
+    def __init__(self, prices, portfolio_value, short, penalty, penalty_weight, views_file):
+        self.portfolio_value = portfolio_value
         self.short = short
         self.title = "Markowitz"
         self.returns = prices.pct_change().dropna()
@@ -39,7 +40,7 @@ class MarkowitzModel:
                 prob.solve()
             if prob.status == "optimal":
                 self.omega_vec.append(self.omega.value)
-                self.objective_values.append(self.omega.value @ (self.Sigma @ self.omega.value))
+                self.objective_values.append(self.omega.value @ self.Sigma @ self.omega.value)
             else:
                 #print(f"Problem {prob.status} for {r=}")
                 invalid_r.append(r)
@@ -52,13 +53,15 @@ class MarkowitzModel:
         self.omega_opt = self.omega_vec[idx]
         self.return_opt = self.r_range[idx]
         self.risk_opt = self.objective_values[idx]
+        self.portfolio = dict(zip(self.returns.columns, (self.omega_opt * self.portfolio_value).round(2).tolist()))
+        self.portfolio = str(self.portfolio)[1:-1].replace("\'", "")
 
-    def print(self, portfolio_value):
+    def print(self):
         print(f" -=-=-=- {self.title} Model -=-=-=- ")
         print(f"Maximum Sharpe Ratio: {self.max_sr:.4f}; Expected Return: {self.return_opt:.4f}; Expected Risk: {self.risk_opt:.4f}")
-        print(f"Optimized Portfolio: \n {dict(zip(self.returns.columns, (self.omega_opt * portfolio_value).round(2).tolist()))}")
+        print(f"Optimized Portfolio: \n{self.portfolio}")
 
-    def plot(self):
+    def plot(self, save, save_file="exports/out.png"):
         plt.figure(figsize=(12, 6))
         plt.plot(self.objective_values, self.r_range)
         plt.grid(True)
@@ -67,4 +70,5 @@ class MarkowitzModel:
         risk_values = np.linspace(0, self.risk_opt, 100)
         plt.plot(risk_values, risk_values * self.max_sr, color="black")
         plt.title(f"{self.title} Efficient Frontier")
+        if save: plt.savefig(save_file.replace("txt", "png"))
         plt.show()
