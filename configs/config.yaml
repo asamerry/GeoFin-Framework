@@ -1,7 +1,6 @@
 data-in:
   portfolio-value: 100 # for percents, use 100
   assets-file: assets/asset-list.csv
-  index-col: Date
   data-col: Close # Open/High/Low/Close/Adj Close/Volume
   period: 5y # 1d/5d/1mo/3mo/6mo/1y/2y/5y/10y/ytd/max
   interval: 1mo # 1m/2m/5m/15m/30m/60m/90m/1h/1d/5d/1wk/1mo
@@ -12,6 +11,6 @@ model:
   penalty: l1 # none/l1/l2
   penalty-weight: 0.1 # [0, 1]
 data-out:
-  plot: yes # yes/no
-  export: yes # yes/no
+  plot: no # yes/no
+  export: no # yes/no
   export-file: exports/black-litterman.txt

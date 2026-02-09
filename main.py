@@ -1,6 +1,7 @@
 import pandas as pd
 import cvxpy as cp
 import os, argparse, yaml
+from datetime import datetime as dt
 import yfinance as yf
 
 from models.markowitz import MarkowitzModel
@@ -22,12 +23,20 @@ with open(args.config, "r") as file:
     config = yaml.safe_load(file)
 
 # Load price data
-print("Loading prices data ...")
-assets = list(pd.read_csv(config["data-in"]["assets-file"])["ABBREVIATION"])
-num_stocks = len(assets)
-data = [yf.Ticker(asset).history(period=config["data-in"]["period"], interval=config["data-in"]["interval"])[config["data-in"]["data-col"]] for asset in assets]
-prices = pd.DataFrame(dict(zip(assets, data)))
-print(f"Data collected through {prices.index[-1].date()}\n")
+date = dt.today().date()
+if os.path.exists(f"data/{date}.csv"):
+    print("Loading cached data ...")
+    prices = pd.read_csv(f"data/{date}.csv", index_col="Date")
+    print(f"Data collected through {prices.index[-1].split(" ")[0]}\n")
+else:
+    print("Loading live data ...")
+    assets = list(pd.read_csv(config["data-in"]["assets-file"])["ABBREVIATION"])
+    data = [yf.Ticker(asset).history(period=config["data-in"]["period"], interval=config["data-in"]["interval"])[config["data-in"]["data-col"]] for asset in assets]
+    prices = pd.DataFrame(dict(zip(assets, data)))
+    os.makedirs("data", exist_ok=True)
+    prices.to_csv(f"data/{date}.csv")
+    print(f"Data collected through {prices.index[-1].date()}\n")
+num_stocks = len(prices.columns)
 
 # Call prescribed model
 models = {"markowitz": MarkowitzModel, "black-litterman": BlackLittermanModel}
@@ -41,10 +50,10 @@ model = models[config["model"]["type"]](
 )
 model.solve()
 model.print()
-if config["data-out"]["plot"]: model.plot(config["data-out"]["export"], config["data-out"]["export-file"])
 
 # Export data
 if config["data-out"]["export"]:
     os.makedirs(config["data-out"]["export-file"].split("/")[0], exist_ok=True)
     with open(config["data-out"]["export-file"], "w") as file:
         file.write(model.portfolio.replace(", ", "\n"))
+if config["data-out"]["plot"]: model.plot(config["data-out"]["export"], config["data-out"]["export-file"])
