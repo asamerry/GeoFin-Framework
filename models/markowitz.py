@@ -71,4 +71,4 @@ class MarkowitzModel:
         plt.plot(risk_values, risk_values * self.max_sr, color="black")
         plt.title(f"{self.title} Efficient Frontier")
         if save: plt.savefig(save_file.replace("txt", "png"))
-        plt.show()
+        else: plt.show()
