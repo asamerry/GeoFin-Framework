@@ -14,8 +14,9 @@ PENALTIES = {
 }
 
 # Parse CLI Arguments
-parser = argparse.ArgumentParser(usage="python3 main.py --config [config-file]")
+parser = argparse.ArgumentParser(usage="python3 main.py --config [config-file] \nUse --recache to force new data.")
 parser.add_argument("--config", type=str, required=True)
+parser.add_argument("--recache", action="store_true", required=False)
 args = parser.parse_args()
 
 # Parse yaml config file
@@ -24,18 +25,19 @@ with open(args.config, "r") as file:
 
 # Load price data
 date = dt.today().date()
-if os.path.exists(f"data/{date}.csv"):
-    print("Loading cached data ...")
-    prices = pd.read_csv(f"data/{date}.csv", index_col="Date")
-    print(f"Data collected through {prices.index[-1].split(" ")[0]}\n")
+prices_file = f"data/{date}-prices.csv"
+if os.path.exists(prices_file) and not args.recache:
+    print("Loading cached prices ...")
+    prices = pd.read_csv(prices_file, index_col="Date")
+    print(f"Data collected through {prices.index[-1].split(" ")[0]}")
 else:
-    print("Loading live data ...")
+    print("Loading live prices ...")
     assets = list(pd.read_csv(config["data-in"]["assets-file"])["ABBREVIATION"])
     data = [yf.Ticker(asset).history(period=config["data-in"]["period"], interval=config["data-in"]["interval"])[config["data-in"]["data-col"]] for asset in assets]
     prices = pd.DataFrame(dict(zip(assets, data)))
     os.makedirs("data", exist_ok=True)
-    prices.to_csv(f"data/{date}.csv")
-    print(f"Data collected through {prices.index[-1].date()}\n")
+    prices.to_csv(prices_file)
+    print(f"Data collected through {prices.index[-1].date()}")
 num_stocks = len(prices.columns)
 
 # Call prescribed model
@@ -46,7 +48,8 @@ model = models[config["model"]["type"]](
     short = config["model"]["short"], 
     penalty = PENALTIES[config["model"]["penalty"]],
     penalty_weight = config["model"]["penalty-weight"],
-    views_file = config["data-in"]["views-file"]
+    views_file = config["data-in"]["views-file"], 
+    recache = args.recache
 )
 model.solve()
 model.print()

@@ -2,6 +2,8 @@ import numpy as np
 from numpy.linalg import inv
 import pandas as pd
 import yfinance as yf
+import os
+from datetime import datetime as dt
 
 import warnings
 warnings.filterwarnings("ignore", category=pd.errors.Pandas4Warning)
@@ -59,34 +61,44 @@ def get_views(views_file, prices):
     
     return np.array(Q).reshape(-1, 1), np.array(P)
 
-def get_market_weights(prices):
-    assets = list(prices.columns)
-    market_caps = {}
-    for asset in assets:
-        info = yf.Ticker(asset).info
-        market_cap = info.get("marketCap", None)
-        if market_cap is None:
-            shares = info.get("sharesOutstanding", None)
-            price = info.get("regularMarketPrice", None) or info.get("previousClose", None)
-            if shares is not None and price is not None:
-                market_cap = shares * price
-        if market_cap is None:
-            market_cap = info.get("totalAssets", None)
-        market_caps[asset] = market_cap
-    
-    market_caps = pd.Series(market_caps).values.astype(float)
+def get_market_weights(prices, recache):
+    date = dt.today().date()
+    market_caps_file = f"data/{date}-market-caps.csv"
+    if os.path.exists(market_caps_file) and not recache:
+        print("Loading cached market caps ...")
+        market_caps = pd.read_csv(market_caps_file)["Market Cap"]
+    else:
+        print("Loading live market caps ...")
+        assets = list(prices.columns)
+        market_caps = {}
+        for asset in assets:
+            info = yf.Ticker(asset).info
+            market_cap = info.get("marketCap", None)
+            if market_cap is None:
+                shares = info.get("sharesOutstanding", None)
+                price = info.get("regularMarketPrice", None) or info.get("previousClose", None)
+                if shares is not None and price is not None:
+                    market_cap = shares * price
+            if market_cap is None:
+                market_cap = info.get("totalAssets", None)
+            market_caps[asset] = market_cap
+        
+        market_caps = pd.Series(market_caps, name="Market Cap")
+        market_caps.to_csv(market_caps_file)
+        
+    market_caps = market_caps.values.astype(float)
     w = market_caps / sum(market_caps)
     return np.array(w).reshape(-1, 1)
 
 class BlackLittermanModel(MarkowitzModel):
-    def __init__(self, prices, portfolio_value, short, penalty, penalty_weight, views_file):
-        super().__init__(prices, portfolio_value, short, penalty, penalty_weight, "none")
+    def __init__(self, prices, portfolio_value, short, penalty, penalty_weight, views_file, recache):
+        super().__init__(prices, portfolio_value, short, penalty, penalty_weight, "none", False)
         self.title = "Black-Litterman"
         tau = 0.05 # [0, 1]
         Q, P = get_views(views_file, prices)
         Omega = np.diag(np.diag(tau * P @ self.Sigma @ P.T))
         
-        w_mkt = get_market_weights(prices)
+        w_mkt = get_market_weights(prices, recache)
         
         r_m = self.returns.values @ w_mkt
         delta = r_m.mean() / r_m.var(ddof=1)

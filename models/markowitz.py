@@ -5,7 +5,7 @@ import warnings
 import cvxpy as cp
 
 class MarkowitzModel:
-    def __init__(self, prices, portfolio_value, short, penalty, penalty_weight, views_file):
+    def __init__(self, prices, portfolio_value, short, penalty, penalty_weight, views_file, recache=False):
         self.portfolio_value = portfolio_value
         self.short = short
         self.title = "Markowitz"
@@ -27,6 +27,7 @@ class MarkowitzModel:
         self.f = cp.quad_form(self.omega, self.Sigma) + penalty_weight * penalty(self.omega)
 
     def solve(self):
+        print("Solving optimization problem ...")
         def g(r, omega, mu):
             constraints = [mu.T @ omega == r, sum(omega) == 1]
             if not self.short: constraints.append(omega >= 0)
@@ -57,7 +58,7 @@ class MarkowitzModel:
         self.portfolio = str(self.portfolio)[1:-1].replace("\'", "")
 
     def print(self):
-        print(f" -=-=-=- {self.title} Model -=-=-=- ")
+        print(f"\n -=-=-=- {self.title} Model -=-=-=- ")
         print(f"Maximum Sharpe Ratio: {self.max_sr:.4f}; Expected Return: {self.return_opt:.4f}; Expected Risk: {self.risk_opt:.4f}")
         print(f"Optimized Portfolio: \n{self.portfolio}")
 
