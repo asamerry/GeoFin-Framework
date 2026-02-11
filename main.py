@@ -4,9 +4,7 @@ import os, argparse, yaml
 from datetime import datetime as dt
 import yfinance as yf
 
-from models.markowitz import MarkowitzModel
-from models.capm import CAPModel
-from models.black_litterman import BlackLittermanModel
+from optimizers import Markowitz
 
 PENALTIES = {
     "none": lambda x: 0, 
@@ -43,10 +41,12 @@ rf_yearly = list(yf.Ticker("^TNX").history(period="1d", interval="1d")["Close"])
 rf_monthly = (1 + rf_yearly) ** (1/12) - 1
 
 # Call prescribed model
-models = {"markowitz": MarkowitzModel, "capm": CAPModel, "black-litterman": BlackLittermanModel}
-model = models[config["model"]["type"]](
+optimizers = {"markowitz": Markowitz}
+optimizer = optimizers[config["model"]["optimizer"]](
     prices = prices, 
     portfolio_value = config["data-in"]["portfolio-value"], 
+    return_est = config["model"]["returns"],
+    risk_est = config["model"]["risk"],
     short = config["model"]["short"], 
     penalty = PENALTIES[config["model"]["penalty"]],
     penalty_weight = config["model"]["penalty-weight"],
@@ -54,12 +54,15 @@ model = models[config["model"]["type"]](
     views_file = config["data-in"]["views-file"], 
     recache = args.recache
 )
-model.solve()
-model.print()
+optimizer.solve()
+optimizer.print()
 
 # Export data
+export_file = config["data-out"]["export-file"]
 if config["data-out"]["export"]:
-    os.makedirs(config["data-out"]["export-file"].split("/")[0], exist_ok=True)
-    with open(config["data-out"]["export-file"], "w") as file:
-        file.write(model.portfolio.replace(", ", "\n"))
-if config["data-out"]["plot"]: model.plot(config["data-out"]["export"], config["data-out"]["export-file"])
+    os.makedirs(export_file.split("/")[0], exist_ok=True)
+    with open(export_file, "w") as file:
+        file.write(optimizer.portfolio.replace(", ", "\n"))
+elif export_file != "none":
+    print(f"Unused parameter: {export_file=}")
+if config["data-out"]["plot"]: optimizer.plot(config["data-out"]["export"], export_file)
