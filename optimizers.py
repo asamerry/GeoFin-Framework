@@ -5,6 +5,12 @@ import cvxpy as cp
 
 from utils import get_returns, get_risk
 
+PENALTIES = {
+    "none": lambda x: 0, 
+    "l1": cp.norm1, 
+    "l2": cp.sum_squares,
+}
+
 class _Optimizer:
     def __init__(self, prices, portfolio_value, return_est, risk_est, short, penalty, penalty_weight, rf, views_file, recache):
         self.prices = prices
@@ -13,8 +19,15 @@ class _Optimizer:
         self.return_est = return_est
         self.risk_est = risk_est
         self.short = short
+        
         self.penalty = penalty
-        self.penalty_weight = 0 if penalty_weight == "none" else penalty_weight
+        self.penalty_func = PENALTIES[penalty]
+        if penalty == "none" and penalty_weight != 0:
+            if penalty_weight != "none":
+                print(f"Unused parameter: {penalty_weight=}")
+            self.penalty_weight = 0
+        else: self.penalty_weight = penalty_weight
+
         self.rf = rf
         self.views_file = views_file
         self.recache = recache
@@ -25,13 +38,9 @@ class _Optimizer:
 class Markowitz(_Optimizer):
     def __init__(self, prices, portfolio_value, return_est, risk_est, short, penalty, penalty_weight, rf, views_file, recache):
         super().__init__(prices, portfolio_value, return_est, risk_est, short, penalty, penalty_weight, rf, views_file, recache)
-
-        if penalty == "none" and penalty_weight not in [0, "none"]:
-            print(f"Unused parameter: {penalty_weight=}")
-
         self.omega_vec = []; self.objective_values = []
         self.omega = cp.Variable(len(self.prices.columns))
-        self.f = cp.quad_form(self.omega, self.expected_risk) + self.penalty_weight * self.penalty(self.omega)
+        self.f = cp.quad_form(self.omega, self.expected_risk) + self.penalty_weight * self.penalty_func(self.omega)
 
     def solve(self):
         print("Solving optimization problem ...")
@@ -68,6 +77,8 @@ class Markowitz(_Optimizer):
     def print(self):
         print(f"\n -=-=-=- Markowitz Model -=-=-=- ")
         print(f"Returns: {self.return_est.capitalize()}; Risk: {self.risk_est.capitalize()}")
+        if self.penalty != "none":
+            print(f"Penalty: {self.penalty}; Penalty Weight: {self.penalty_weight}")
         print(f"Maximum Sharpe Ratio: {self.max_sr:.4f}; Expected Return: {self.return_opt:.4f}; Expected Risk: {self.risk_opt:.4f}")
         print(f"Optimized Portfolio: \n{self.portfolio}")
 

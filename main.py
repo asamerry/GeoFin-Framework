@@ -1,16 +1,9 @@
 import pandas as pd
-import cvxpy as cp
 import os, argparse, yaml
 from datetime import datetime as dt
 import yfinance as yf
 
 from optimizers import Markowitz
-
-PENALTIES = {
-    "none": lambda x: 0, 
-    "l1": cp.norm1, 
-    "l2": cp.sum_squares,
-}
 
 # Parse CLI Arguments
 parser = argparse.ArgumentParser(usage="python3 main.py --config [config-file] \nUse --recache to force new data.")
@@ -48,7 +41,7 @@ optimizer = optimizers[config["model"]["optimizer"]](
     return_est = config["model"]["returns"],
     risk_est = config["model"]["risk"],
     short = config["model"]["short"], 
-    penalty = PENALTIES[config["model"]["penalty"]],
+    penalty = config["model"]["penalty"],
     penalty_weight = config["model"]["penalty-weight"],
     rf = rf_monthly,
     views_file = config["data-in"]["views-file"], 
