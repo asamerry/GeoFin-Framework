@@ -5,7 +5,7 @@ import warnings
 import cvxpy as cp
 
 class MarkowitzModel:
-    def __init__(self, prices, portfolio_value, short, penalty, penalty_weight, views_file, recache=False):
+    def __init__(self, prices, portfolio_value, short, penalty, penalty_weight, rf, views_file, recache=False):
         self.portfolio_value = portfolio_value
         self.short = short
         self.title = "Markowitz"
@@ -15,8 +15,6 @@ class MarkowitzModel:
         self.Sigma = self.returns.cov()      
 
         self.omega_vec = []; self.objective_values = []
-
-        self.r_range = np.linspace(self.mu.min()+1e-3, self.mu.max()-1e-3, 500).tolist()
 
         if views_file != "none":
             print(f"Unused parameter: {views_file=}")
@@ -29,10 +27,11 @@ class MarkowitzModel:
     def solve(self):
         print("Solving optimization problem ...")
         def g(r, omega, mu):
-            constraints = [mu.T @ omega == r, sum(omega) == 1]
+            constraints = [mu.T @ omega >= r, sum(omega) == 1]
             if not self.short: constraints.append(omega >= 0)
             return constraints
 
+        self.r_range = np.linspace(max(self.mu.min() + 1e-5, 0), self.mu.max() - 1e-5, 500).tolist()
         invalid_r = []
         for r in self.r_range:
             prob = cp.Problem(cp.Minimize(self.f), g(r, self.omega, self.mu))
@@ -43,7 +42,7 @@ class MarkowitzModel:
                 self.omega_vec.append(self.omega.value)
                 self.objective_values.append(self.omega.value @ self.Sigma @ self.omega.value)
             else:
-                #print(f"Problem {prob.status} for {r=}")
+                # print(f"Problem {prob.status} for {r=}")
                 invalid_r.append(r)
         for r in invalid_r:
             self.r_range.remove(r)

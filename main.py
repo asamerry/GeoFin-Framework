@@ -5,6 +5,7 @@ from datetime import datetime as dt
 import yfinance as yf
 
 from models.markowitz import MarkowitzModel
+from models.capm import CAPModel
 from models.black_litterman import BlackLittermanModel
 
 PENALTIES = {
@@ -38,16 +39,18 @@ else:
     os.makedirs("data", exist_ok=True)
     prices.to_csv(prices_file)
     print(f"Data collected through {prices.index[-1].date()}")
-num_stocks = len(prices.columns)
+rf_yearly = list(yf.Ticker("^TNX").history(period="1d", interval="1d")["Close"])[0] / 100
+rf_monthly = (1 + rf_yearly) ** (1/12) - 1
 
 # Call prescribed model
-models = {"markowitz": MarkowitzModel, "black-litterman": BlackLittermanModel}
+models = {"markowitz": MarkowitzModel, "capm": CAPModel, "black-litterman": BlackLittermanModel}
 model = models[config["model"]["type"]](
     prices = prices, 
     portfolio_value = config["data-in"]["portfolio-value"], 
     short = config["model"]["short"], 
     penalty = PENALTIES[config["model"]["penalty"]],
     penalty_weight = config["model"]["penalty-weight"],
+    rf = rf_monthly,
     views_file = config["data-in"]["views-file"], 
     recache = args.recache
 )

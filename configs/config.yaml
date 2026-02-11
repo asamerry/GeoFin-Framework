@@ -6,7 +6,7 @@ data-in:
   interval: 1mo # 1m/2m/5m/15m/30m/60m/90m/1h/1d/5d/1wk/1mo
   views-file: views/views.txt
 model:
-  type: black-litterman # markowitz/black-litterman
+  type: black-litterman # markowitz/capm/black-litterman
   short: no # yes/no
   penalty: l1 # none/l1/l2
   penalty-weight: 0.1 # [0, 1]
