@@ -21,14 +21,18 @@ We've provided output options as well for those that want to view the graph of t
 ## Getting Started
 
 To use this application, simply open your command terminal and run the following commands:
-1. `git clone https://github.com/asamerry/Finance-Engine.git`
-2. `cd Finance-Engine`
-3. `make`
+```bash
+$ git clone https://github.com/asamerry/Finance-Engine.git
+$ cd Finance-Engine
+$ make
+```
 
 Next, you're going to want to create a configuration file for the application. We have provided an example configuration file at `configs/config.yaml` to help you get started. If you're using Black-Litterman return estimates, you'll also want to create a views file. An example views file has been provided as `views/views.txt`. 
 
 All that's left to do is run the application using 
-`python3 main.py --config [path-to-config-file]`.
+```bash
+$ python3 main.py --config [path-to-config-file]
+```
 
 Prices and market cap data will automatically be cached daily to speed up successive runs, but you can force new data by including the `--recache` tag. 
 
