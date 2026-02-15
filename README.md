@@ -156,4 +156,4 @@ where $S_0$ is the spot price of the underlying asset, $K$ is the strike price o
 
 $$d_1 = \frac{\ln(\frac{S_0}{K}) + (r + \frac{\sigma^2}2)T}{\sigma\sqrt T}, \quad \text{and} \quad d_2 = \frac{\ln(\frac{S_0}{K}) + (r - \frac{\sigma^2}2)T}{\sigma\sqrt T}.$$
 
-The Black-Scholes arises from the construction of a riskless replicating portfolio and solving the associated parabolic PDE under no-arbitrage conditions. Although its simplifying assumptions and restriction to European options, the model provides a fondational framework for more advanced models such as the Stochstic Volatility and Jump Diffusion models. 
+The Black-Scholes arises from the construction of a riskless replicating portfolio and solving the associated parabolic PDE under no-arbitrage conditions. Despite its simplifying assumptions and restriction to European options, the model provides a fondational framework for more advanced models such as the Stochastic Volatility and Jump Diffusion models. 
