@@ -4,14 +4,22 @@ data-in:
   data-col: Close # Open/High/Low/Close/Adj Close/Volume
   period: 5y # 1d/5d/1mo/3mo/6mo/1y/2y/5y/10y/ytd/max
   interval: 1mo # 1m/2m/5m/15m/30m/60m/90m/1h/1d/5d/1wk/1mo
-  views-file: none # for black-litterman returns
-model:
+  views-file: views/views.txt # for black-litterman returns
+portfolio-optimization:
   optimizer: markowitz # markowitz
   returns: historic # historic/capm/black-litterman
   risk: variance # variance
   short: no # yes/no
   penalty: none # none/l1/l2
   penalty-weight: none # [0, 1]
+options-pricing:
+  pricer: binomial # binomial/black-scholes
+  price-range: [35, 45]
+  strike-price: 40
+  vol-range: [0.1, 0.5]
+  risk-free-rate: 0.08 
+  dividend-yield: 0 
+  time-to-expiry: 2
 data-out:
   plot: no # yes/no
   export: no # yes/no

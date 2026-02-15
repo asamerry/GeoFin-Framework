@@ -6,8 +6,6 @@ import io
 from PIL import Image
 from graphviz import Digraph
 
-from options import Option
-
 # Finite Difference Model
 # GARCH Model
 # Heston Model
@@ -15,6 +13,25 @@ from options import Option
 # Local Volatility Model
 # Monte Carlo Simulation
 # Stochastic Volatility Model
+
+class Option:
+    def __init__(self, o_style, stock_p, strike_p, exp_t, sigma, int_r):
+        self.o_style: str = o_style
+        self.stock_p: float = stock_p
+        self.strike_p: float = strike_p
+        self.exp_t: float = exp_t
+        self.sigma: float = sigma
+        self.int_r: float = int_r
+
+        self.call_p = 0
+        self.put_p = 0
+
+    def __repr__(self):
+        repr = f"{self.o_style.capitalize()} Option"
+        repr += f"\nInitial Price: {self.stock_p}; Strike Price: {self.strike_p}" 
+        repr += f"\nExpiration Date: {self.exp_t}; Volatility: {self.sigma}; Interest Rate: {self.int_r}"
+        repr += f"\nCall Price: {self.call_p:.2f}; Put Price: {self.put_p:.2f}"
+        return repr
 
 class _Pricer:
     def __init__(self):
@@ -25,15 +42,14 @@ class _Pricer:
         repr += f"\n{option}"
         print(repr)
     
-    def price(self, option): 
-        self._print(option)
+    def price(self, option, print: bool = True): pass # virtual
     
     def heatmap(self, options: list[list[Option]]):
         m = len(options); n = len(options[0])
         C = np.zeros((m, n)); P = np.zeros((m, n))
         for i in range(len(options)):
             for j in range(len(options[i])):
-                self.price(options[i][j])
+                self.price(options[i][j], print=False)
                 C[i, j] = options[i][j].call_p
                 P[i, j] = options[i][j].put_p
 
@@ -70,7 +86,7 @@ class BinomialPricer(_Pricer):
     def __init__(self):
         self.title = "Binomial"
 
-    def price(self, option: Option, plot: bool = False, interval: float = 1):
+    def price(self, option: Option, print: bool = True, plot: bool = False, interval: float = 1):
         delta = 0
         u = np.exp((option.int_r - delta) * interval + option.sigma * np.sqrt(interval))
         d = np.exp((option.int_r - delta) * interval - option.sigma * np.sqrt(interval))
@@ -133,18 +149,18 @@ class BinomialPricer(_Pricer):
             plt.imshow(img)
             plt.axis("off")
             plt.show()
-        super()._print(option)
+        if print: super()._print(option)
 
 class BlackScholesPricer(_Pricer):
     def __init__(self):
         self.title = "Black-Scholes"
 
-    def price(self, option: Option):
+    def price(self, option: Option, print: bool = True):
         vol = option.sigma * np.sqrt(option.exp_t)
         d1 = (np.log(option.stock_p / option.strike_p) + (option.int_r + option.sigma**2 / 2) * option.exp_t) / vol
         d2 = d1 - vol
 
         option.call_p = option.stock_p * norm.cdf(d1) - option.strike_p * np.exp(-option.int_r * option.exp_t) * norm.cdf(d2)
         option.put_p = option.strike_p * np.exp(-option.int_r * option.exp_t) * norm.cdf(-d2) - option.stock_p * norm.cdf(-d1)
-
-        super()._print(option)
+        
+        if print: super()._print(option)
