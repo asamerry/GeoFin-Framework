@@ -1,4 +1,4 @@
-# Finance-Engine
+# GeoFin-Framework
 
 ## Welcome
 
@@ -28,8 +28,8 @@ The framework currently includes the following models:
 
 To use this application, simply open your command terminal and run the following commands:
 ```bash
-$ git clone https://github.com/asamerry/Finance-Engine.git
-$ cd Finance-Engine
+$ git clone https://github.com/asamerry/GeoFin-Framework.git
+$ cd GeoFin-Framework
 $ make
 ```
 

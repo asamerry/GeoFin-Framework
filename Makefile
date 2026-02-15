@@ -1,7 +1,7 @@
-all: fe-env
+all: geofin-env
 
-fe-env:
-	@python3 -m venv .fe-env/
+geofin-env:
+	@python3 -m venv .geofin-env/
 	@.geofin-env/bin/pip3 install -r requirements.txt
 
 	@clear
