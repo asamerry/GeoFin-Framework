@@ -19,7 +19,7 @@ The framework currently includes the following models:
     Risk Estimators:
     - Variance
 
-  2. Options Pricing Models
+  2. Options Pricing Models:
      - Binomial
      - Black-Scholes
 
