@@ -37,7 +37,7 @@ Next, you're going to want to create a configuration file for the application. W
 
 All that's left to do is run the application using 
 ```bash
-$ python3 main.py --config [path-to-config-file]
+$ python3 main.py --config [path-to-config-file] -t [portfolio-optimization/options-pricing]
 ```
 
 Prices and market cap data will automatically be cached daily to speed up successive runs, but you can force new data by including the `--recache` tag. 
